@@ -1,6 +1,11 @@
 # CTkColorPicker
 **A modern color picker made for customtkinter!**
 
+![Screenshot](https://user-images.githubusercontent.com/89206401/209182773-d76bf05c-610e-4297-aec5-7bb61a11d6d3.jpg)
+
+## Download
+### [<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/Akascape/CTkColorPicker?&color=white&label=Source%20Code&logo=Python&logoColor=yellow&style=for-the-badge"  width="250">](https://github.com/Akascape/CTkColorPicker/archive/refs/heads/main.zip)
+
 ### How to use?
 ```python
 import customtkinter as ctk
@@ -18,3 +23,4 @@ button.pack(padx=30, pady=20)
 root.mainloop()
 ```
 
+**Thats all, hope it will help!**
