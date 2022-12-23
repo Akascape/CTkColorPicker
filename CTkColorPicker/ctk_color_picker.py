@@ -33,14 +33,9 @@ class AskColor(customtkinter.CTkToplevel):
         
         self.frame = customtkinter.CTkFrame(master=self)
         self.frame.grid(padx=20, pady=20, sticky="nswe")
-        
-        if customtkinter.get_appearance_mode()=="Dark":
-            o = 1
-        else:
-            o = 0
-            
+          
         self.canvas = tkinter.Canvas(self.frame, height=200, width=200, highlightthickness=0,
-                                bg=customtkinter.ThemeManager.theme["CTkFrame"]["fg_color"][o])
+                                bg=self.frame._apply_appearance_mode(self.frame._fg_color))
         self.canvas.pack(pady=20)
         self.canvas.bind("<B1-Motion>", self.on_mouse_drag)
 
