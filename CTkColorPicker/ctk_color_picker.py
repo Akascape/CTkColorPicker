@@ -117,3 +117,4 @@ class AskColor(customtkinter.CTkToplevel):
 
 if __name__ == "__main__":
     app = AskColor()               
+    app.mainloop()
