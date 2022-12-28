@@ -3,7 +3,7 @@
 import tkinter
 import customtkinter
 from PIL import Image, ImageTk
-from colour import Color
+from .colour import Color
 import sys
 import os
 
