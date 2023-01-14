@@ -101,7 +101,7 @@ class AskColor(customtkinter.CTkToplevel):
         if d_from_center < 100:
             self.target_x, self.target_y = x, y
         else:
-            self.target_x, self.target_y = self.projection_on_circle(x, y, 100, 100, 100)
+            self.target_x, self.target_y = self.projection_on_circle(x, y, 100, 100, 99)
 
         self.canvas.create_image(self.target_x, self.target_y, image=self.target)
         
