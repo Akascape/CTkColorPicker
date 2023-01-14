@@ -80,12 +80,12 @@ class AskColor(customtkinter.CTkToplevel):
         self.grab_set()
         
     def get(self):
-        self._color = self.label._fg_color
+        self._color = self.rgb_color
         self.master.wait_window(self)
         return self._color
     
     def _ok_event(self, event=None):
-        self._color = self.label._fg_color
+        self._color = self.rgb_color
         self.grab_release()
         self.destroy()
         
