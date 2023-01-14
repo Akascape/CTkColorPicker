@@ -7,7 +7,7 @@
 ### [<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/Akascape/CTkColorPicker?&color=white&label=Source%20Code&logo=Python&logoColor=yellow&style=for-the-badge"  width="250">](https://github.com/Akascape/CTkColorPicker/archive/refs/heads/main.zip)
 
 ## Requirements
-- customtkinter
+- [customtkinter](https://github.com/TomSchimansky/CustomTkinter)
 
 ### How to use?
 ```python
