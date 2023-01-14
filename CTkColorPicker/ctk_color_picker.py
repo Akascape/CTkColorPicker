@@ -1,4 +1,4 @@
-# CTk Color Picker by Akash Bora (Akascape)
+# Modified version by helloHackYnow of the CTk Color Picker by Akash Bora (Akascape)
 
 import tkinter
 import customtkinter
