@@ -24,7 +24,7 @@ def projection_on_circle(point_x, point_y, circle_x, circle_y, radius):
 
 class AskColor(customtkinter.CTkToplevel):
     
-    def __init__(self):
+    def __init__(self, color=(255, 255, 255)):
         
         super().__init__()
         
@@ -37,8 +37,9 @@ class AskColor(customtkinter.CTkToplevel):
         self.grid_rowconfigure(0, weight=1)
         self.after(10)
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
-        
-        self.rgb_color = [255, 255, 255]
+
+        self.default_color = [color[0], color[1], color[2]]
+        self.rgb_color = self.default_color[:]
         
         self.frame = customtkinter.CTkFrame(master=self)
         self.frame.grid(padx=20, pady=20, sticky="nswe")
@@ -63,7 +64,6 @@ class AskColor(customtkinter.CTkToplevel):
                                               button_length=15, progress_color="white", from_=0, to=255,
                                               number_of_steps=256, command=lambda x:self.update_colors(), button_hover_color=None, variable=self.brightness_slider_value)
         self.slider.pack(fill="both", pady=(0,15), padx=20)
-        self.slider.set(100)
 
         self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color="#ffffff",
                                             corner_radius=24, text="#ffffff")
@@ -90,7 +90,7 @@ class AskColor(customtkinter.CTkToplevel):
         self.destroy()
         
     def _on_closing(self):
-        self._color = None
+        self._color = self.default_color
         self.grab_release()
         self.destroy()
         
