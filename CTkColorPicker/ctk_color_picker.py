@@ -58,8 +58,8 @@ class AskColor(customtkinter.CTkToplevel):
         
         self.slider = customtkinter.CTkSlider(master=self.frame, height=20, border_width=1,
                                               button_length=15, progress_color="white", from_=0, to=255,
-                                              button_hover_color=None, variable=self.brightness_slider_value,
-                                              number_of_steps=256, command=lambda x:self.update_colors())
+                                              variable=self.brightness_slider_value, number_of_steps=256, 
+                                              command=lambda x:self.update_colors())
         self.slider.pack(fill="both", pady=(0,15), padx=20)
         
         self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color="#ffffff",
