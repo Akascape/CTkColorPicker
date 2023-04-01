@@ -10,23 +10,29 @@ import os
 import math
 
 if sys.platform.startswith("win"):
-    import ctypes
-    ctypes.windll.shcore.SetProcessDpiAwareness(0)
-    
-HEIGHT = 450
-WIDTH = 300
+    try:
+        import ctypes
+        ctypes.windll.shcore.SetProcessDpiAwareness(0)
+    except:
+        pass
+
 PATH = os.path.dirname(os.path.realpath(__file__))
 
 class AskColor(customtkinter.CTkToplevel):
     
-    def __init__(self, color=(255, 255, 255)):
+    def __init__(self, color=(255, 255, 255), width: int=300):
         
         super().__init__()
         
         self.title("Choose Color")
+        WIDTH = width if width>=200 else 200
+        HEIGHT = WIDTH + 150
+        self.image_dimension = WIDTH - 100
+            
         self.maxsize(WIDTH, HEIGHT)
         self.minsize(WIDTH, HEIGHT)
-        self.attributes("-topmost", True)
+        self.resizable(width=False, height=False)
+        self.transient(self.master)
         self.lift()
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
@@ -39,19 +45,19 @@ class AskColor(customtkinter.CTkToplevel):
         self.frame = customtkinter.CTkFrame(master=self)
         self.frame.grid(padx=20, pady=20, sticky="nswe")
           
-        self.canvas = tkinter.Canvas(self.frame, height=200, width=200, highlightthickness=0,
+        self.canvas = tkinter.Canvas(self.frame, height=self.image_dimension, width=self.image_dimension, highlightthickness=0,
                                 bg=self.frame._apply_appearance_mode(self.frame._fg_color))
         self.canvas.pack(pady=20)
         self.canvas.bind("<B1-Motion>", self.on_mouse_drag)
 
-        self.img1 = Image.open(os.path.join(PATH, 'color_wheel.png')).resize((200, 200), Image.Resampling.LANCZOS)
+        self.img1 = Image.open(os.path.join(PATH, 'color_wheel.png')).resize((self.image_dimension, self.image_dimension), Image.Resampling.LANCZOS)
         self.img2 = Image.open(os.path.join(PATH, 'target.png')).resize((20, 20), Image.Resampling.LANCZOS)
 
         self.wheel = ImageTk.PhotoImage(self.img1)
         self.target = ImageTk.PhotoImage(self.img2)
 
-        self.canvas.create_image(100,100, image=self.wheel)
-        self.canvas.create_image(100, 100, image=self.target)
+        self.canvas.create_image(self.image_dimension/2, self.image_dimension/2, image=self.wheel)
+        self.canvas.create_image(self.image_dimension/2, self.image_dimension/2, image=self.target)
         
         self.brightness_slider_value = customtkinter.IntVar()
         self.brightness_slider_value.set(255)
@@ -94,14 +100,14 @@ class AskColor(customtkinter.CTkToplevel):
         x = event.x
         y = event.y
         self.canvas.delete("all")
-        self.canvas.create_image(100, 100, image=self.wheel)
+        self.canvas.create_image(self.image_dimension/2, self.image_dimension/2, image=self.wheel)
         
-        d_from_center = math.sqrt((100-x)**2 + (100-y)**2)
+        d_from_center = math.sqrt(((self.image_dimension/2)-x)**2 + ((self.image_dimension/2)-y)**2)
         
-        if d_from_center < 100:
+        if d_from_center < self.image_dimension/2:
             self.target_x, self.target_y = x, y
         else:
-            self.target_x, self.target_y = self.projection_on_circle(x, y, 100, 100, 99)
+            self.target_x, self.target_y = self.projection_on_circle(x, y, self.image_dimension/2, self.image_dimension/2, self.image_dimension/2 -1)
 
         self.canvas.create_image(self.target_x, self.target_y, image=self.target)
         
