@@ -20,7 +20,7 @@ import customtkinter as ctk
 from CTkColorPicker import AskColor
 
 def ask_color():
-    pick_color = AskColor() # Open the Color Picker
+    pick_color = AskColor(width=300) # Open the Color Picker, size of the window can be changed by adjusting width parameter
     color = pick_color.get() # Get the color
     button.configure(fg_color=color)
     
