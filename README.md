@@ -13,6 +13,7 @@ pip install CTkColorPicker
 
 ## Requirements
 - [customtkinter](https://github.com/TomSchimansky/CustomTkinter)
+- [pillow](https://pypi.org/project/Pillow/)
 
 ### How to use?
 ```python
