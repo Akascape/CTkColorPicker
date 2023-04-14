@@ -46,9 +46,9 @@ class AskColor(customtkinter.CTkToplevel):
         self.after(10)
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
         
-        self.hex_color = "#ffffff"  
-        self.default_color = [255, 255, 255]
-        self.rgb_color = self.default_color[:]
+        self.default_hex_color = "#ffffff"  
+        self.default_rgb = [255, 255, 255]
+        self.rgb_color = self.default_rgb[:]
         
         self.bg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["fg_color"]) if bg_color is None else bg_color
         self.fg_color = self.fg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["top_fg_color"]) if fg_color is None else fg_color
@@ -77,14 +77,14 @@ class AskColor(customtkinter.CTkToplevel):
         self.brightness_slider_value.set(255)
         
         self.slider = customtkinter.CTkSlider(master=self.frame, height=20, border_width=1,
-                                              button_length=15, progress_color=self.hex_color, from_=0, to=255,
+                                              button_length=15, progress_color=self.default_hex_color, from_=0, to=255,
                                               variable=self.brightness_slider_value, number_of_steps=256, 
                                               button_color=self.button_color, button_hover_color=self.button_hover_color,
                                               command=lambda x:self.update_colors())
         self.slider.pack(fill="both", pady=(0,15), padx=20)
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color=self.hex_color,
-                                            corner_radius=24, text=self.hex_color)
+        self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color=self.default_hex_color,
+                                            corner_radius=24, text=self.default_hex_color)
         self.label.pack(fill="both", padx=10)
         
         self.button = customtkinter.CTkButton(master=self.frame, text="OK", height=50, corner_radius=24, fg_color=self.button_color,
@@ -138,7 +138,7 @@ class AskColor(customtkinter.CTkToplevel):
             self.rgb_color = [r, g, b]
             
         except AttributeError:
-            self.rgb_color = self.default_color
+            self.rgb_color = self.default_rgb
     
     def update_colors(self):
         brightness = self.brightness_slider_value.get()
@@ -151,12 +151,12 @@ class AskColor(customtkinter.CTkToplevel):
         
         self.rgb_color = [r, g, b]
 
-        self.hex_color = "#{:02x}{:02x}{:02x}".format(*self.rgb_color)
+        self.default_hex_color = "#{:02x}{:02x}{:02x}".format(*self.rgb_color)
         
-        self.slider.configure(progress_color=self.hex_color)
-        self.label.configure(fg_color=self.hex_color)
+        self.slider.configure(progress_color=self.default_hex_color)
+        self.label.configure(fg_color=self.default_hex_color)
         
-        self.label.configure(text=str(self.hex_color))
+        self.label.configure(text=str(self.default_hex_color))
         
         if self.brightness_slider_value.get() < 70:
             self.label.configure(text_color="white")
@@ -182,7 +182,7 @@ class AskColor(customtkinter.CTkToplevel):
             except ValueError:
                 return
             
-            self.hex_color = initial_color
+            self.default_hex_color = initial_color
             for i in range(0, self.image_dimension):
                 for j in range(0, self.image_dimension):
                     self.rgb_color = self.img1.getpixel((i, j))
@@ -197,4 +197,3 @@ class AskColor(customtkinter.CTkToplevel):
 if __name__ == "__main__":
     app = AskColor()
     app.mainloop()
-    
