@@ -30,7 +30,7 @@ class AskColor(customtkinter.CTkToplevel):
                  button_hover_color: str = None,
                  text: str = "OK",
                  corner_radius: int = 24,
-                 slider_border_width: int = 1,
+                 slider_border: int = 1,
                  **button_kwargs):
     
         super().__init__()
@@ -60,7 +60,7 @@ class AskColor(customtkinter.CTkToplevel):
         self.button_hover_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkButton"]["hover_color"]) if button_hover_color is None else button_hover_color
         self.button_text = text
         self.corner_radius = corner_radius
-        self.slider_width = slider_border_width
+        self.slider_width = 10 if slider_border>=10 else slider_border
         
         self.config(bg=self.bg_color)
         
