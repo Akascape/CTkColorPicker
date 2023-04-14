@@ -43,6 +43,9 @@ root.mainloop()
 | button_hover_color | change the hover color of the buttons |
 | text | change the default text of the 'OK' button |
 | initial_color | set the default color of color picker (currently in beta stage) |
+| slider_border_width | change the border width of slider |
+| corner_radius | change the corner radius of all the widgets inside color picker |
+| _**other button parameters_ | pass other button arguments if required |
 
 
 **That's all, hope it will help!**
