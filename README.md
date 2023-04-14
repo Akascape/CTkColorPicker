@@ -41,6 +41,7 @@ root.mainloop()
 | bg_color | change background color of the color picker frame |
 | button_color | change the color of the button and slider |
 | button_hover_color | change the hover color of the buttons |
+| text | change the default text of the 'OK' button |
 | initial_color | set the default color of color picker (currently in beta stage) |
 
 
