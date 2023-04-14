@@ -27,7 +27,11 @@ class AskColor(customtkinter.CTkToplevel):
                  bg_color: str = None,
                  fg_color: str = None,
                  button_color: str = None,
-                 button_hover_color: str = None):
+                 button_hover_color: str = None,
+                 text: str = "OK",
+                 corner_radius: int = 24,
+                 slider_border_width: int = 1,
+                 **button_kwargs):
     
         super().__init__()
         
@@ -54,6 +58,9 @@ class AskColor(customtkinter.CTkToplevel):
         self.fg_color = self.fg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["top_fg_color"]) if fg_color is None else fg_color
         self.button_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkButton"]["fg_color"]) if button_color is None else button_color
         self.button_hover_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkButton"]["hover_color"]) if button_hover_color is None else button_hover_color
+        self.button_text = text
+        self.corner_radius = corner_radius
+        self.slider_width = slider_border_width
         
         self.config(bg=self.bg_color)
         
@@ -76,19 +83,20 @@ class AskColor(customtkinter.CTkToplevel):
         self.brightness_slider_value = customtkinter.IntVar()
         self.brightness_slider_value.set(255)
         
-        self.slider = customtkinter.CTkSlider(master=self.frame, height=20, border_width=1,
+        self.slider = customtkinter.CTkSlider(master=self.frame, height=20, border_width=self.slider_width,
                                               button_length=15, progress_color=self.default_hex_color, from_=0, to=255,
-                                              variable=self.brightness_slider_value, number_of_steps=256, 
+                                              variable=self.brightness_slider_value, number_of_steps=256,
+                                              button_corner_radius=self.corner_radius, corner_radius=self.corner_radius,
                                               button_color=self.button_color, button_hover_color=self.button_hover_color,
                                               command=lambda x:self.update_colors())
-        self.slider.pack(fill="both", pady=(0,15), padx=20)
+        self.slider.pack(fill="both", pady=(0,15), padx=20-self.slider_width)
 
         self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color=self.default_hex_color,
-                                            corner_radius=24, text=self.default_hex_color)
+                                            corner_radius=self.corner_radius, text=self.default_hex_color)
         self.label.pack(fill="both", padx=10)
         
-        self.button = customtkinter.CTkButton(master=self.frame, text="OK", height=50, corner_radius=24, fg_color=self.button_color,
-                                              hover_color=self.button_hover_color, command=self._ok_event)
+        self.button = customtkinter.CTkButton(master=self.frame, text=self.button_text, height=50, corner_radius=self.corner_radius, fg_color=self.button_color,
+                                              hover_color=self.button_hover_color, command=self._ok_event, **button_kwargs)
         self.button.pack(fill="both", padx=10, pady=20)
                 
         self.after(150, lambda: self.label.focus())
