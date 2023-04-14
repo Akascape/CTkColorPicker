@@ -21,7 +21,7 @@ import customtkinter as ctk
 from CTkColorPicker import AskColor
 
 def ask_color():
-    pick_color = AskColor(width=300) # Open the Color Picker, size of the window can be changed by adjusting width parameter
+    pick_color = AskColor()
     color = pick_color.get() # Get the color
     button.configure(fg_color=color)
     
@@ -32,4 +32,16 @@ button.pack(padx=30, pady=20)
 root.mainloop()
 ```
 
-**Thats all, hope it will help!**
+# Options
+| Arguments | Description |
+|---------|-------------|
+| width | set the overall size of the color picker window |
+| title | change the title of color picker window |
+| fg_color | change forground color of the color picker frame |
+| bg_color | change background color of the color picker frame |
+| button_color | change the color of the button and slider |
+| button_hover_color | change the hover color of the buttons |
+| initial_color | set the default color of color picker (currently in beta stage) |
+
+
+**That's all, hope it will help!**
