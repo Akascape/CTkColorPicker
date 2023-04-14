@@ -21,8 +21,8 @@ import customtkinter as ctk
 from CTkColorPicker import AskColor
 
 def ask_color():
-    pick_color = AskColor()
-    color = pick_color.get() # Get the color
+    pick_color = AskColor() # open the color picker
+    color = pick_color.get() # get the color string
     button.configure(fg_color=color)
     
 root = ctk.CTk()
