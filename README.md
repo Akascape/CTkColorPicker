@@ -18,7 +18,7 @@ pip install CTkColorPicker
 ### How to use?
 ```python
 import customtkinter as ctk
-from CTkColorPicker import AskColor
+from CTkColorPicker import *
 
 def ask_color():
     pick_color = AskColor() # open the color picker
@@ -32,7 +32,7 @@ button.pack(padx=30, pady=20)
 root.mainloop()
 ```
 
-# Options
+## Options
 | Arguments | Description |
 |---------|-------------|
 | width | set the overall size of the color picker window |
@@ -47,5 +47,32 @@ root.mainloop()
 | corner_radius | change the corner radius of all the widgets inside color picker |
 | _**other button parameters_ | pass other button arguments if required |
 
+# ColorPickerWidget
+**This is a new color picker widget that can be placed inside a customtkinter frame.**
+
+![Screenshot 2023-05-17 191125](https://github.com/Akascape/CTkColorPicker/assets/89206401/ca03751a-90a3-45e6-8ba4-745a92ab1c12)
+
+### Usage
+```python
+from CTkColorPicker import *
+import customtkinter
+
+root = customtkinter.CTk()
+colorpicker = CTkColorPicker(root, width=500, command=lambda e: print(e))
+colorpicker.pack(padx=10, pady=10)
+root.mainloop()
+```
+
+## Options
+| Arguments | Description |
+|---------|-------------|
+| master | parent widget |
+| width | set the overall size of the color picker window |
+| fg_color | change forground color of the color picker frame |
+| initial_color | set the default color of color picker (currently in beta stage) |
+| slider_border | change the border width of slider |
+| corner_radius | change the corner radius of all the widgets inside color picker |
+| command | add a command when the color is changed |
+| _**other slider parameters_ | pass other slider arguments if required |
 
 **That's all, hope it will help!**
