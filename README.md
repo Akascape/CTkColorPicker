@@ -67,7 +67,7 @@ root.mainloop()
 | Arguments | Description |
 |---------|-------------|
 | master | parent widget |
-| width | set the overall size of the color picker window |
+| width | set the overall size of the color picker frame |
 | fg_color | change forground color of the color picker frame |
 | initial_color | set the default color of color picker (currently in beta stage) |
 | slider_border | change the border width of slider |
