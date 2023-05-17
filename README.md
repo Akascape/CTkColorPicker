@@ -50,7 +50,7 @@ root.mainloop()
 # ColorPickerWidget
 **This is a new color picker widget that can be placed inside a customtkinter frame.**
 
-![Screenshot 2023-05-17 191125](https://github.com/Akascape/CTkColorPicker/assets/89206401/ca03751a-90a3-45e6-8ba4-745a92ab1c12)
+![Screenshot](https://github.com/Akascape/CTkColorPicker/assets/89206401/ca03751a-90a3-45e6-8ba4-745a92ab1c12)
 
 ### Usage
 ```python
