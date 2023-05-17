@@ -1,6 +1,5 @@
-# CTk Color Picker for customtkinter
-# Original Author: Akash Bora (Akascape)
-# Contributers: Victor Vimbert-Guerlais (helloHackYnow)
+# CTk Color Picker widget for customtkinter
+# Author: Akash Bora (Akascape)
 
 import tkinter
 import customtkinter
@@ -18,57 +17,41 @@ if sys.platform.startswith("win"):
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 
-class AskColor(customtkinter.CTkToplevel):
+class CTkColorPicker(customtkinter.CTkFrame):
     
     def __init__(self,
+                 master: any = None,
                  width: int = 300,
-                 title: str = "Choose Color",
                  initial_color: str = None,
-                 bg_color: str = None,
                  fg_color: str = None,
-                 button_color: str = None,
-                 button_hover_color: str = None,
-                 text: str = "OK",
-                 corner_radius: int = 24,
                  slider_border: int = 1,
-                 **button_kwargs):
+                 corner_radius: int = 24,
+                 command = None,
+                 **slider_kwargs):
     
-        super().__init__()
+        super().__init__(master=master, corner_radius=corner_radius)
         
-        self.title(title)
         WIDTH = width if width>=200 else 200
         HEIGHT = WIDTH + 150
         self.image_dimension = WIDTH - 100
-            
-        self.maxsize(WIDTH, HEIGHT)
-        self.minsize(WIDTH, HEIGHT)
-        self.resizable(width=False, height=False)
-        self.transient(self.master)
         self.lift()
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.after(10)
-        self.protocol("WM_DELETE_WINDOW", self._on_closing)
-        
+
+        self.after(10)       
         self.default_hex_color = "#ffffff"  
         self.default_rgb = [255, 255, 255]
         self.rgb_color = self.default_rgb[:]
         
-        self.bg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["fg_color"]) if bg_color is None else bg_color
-        self.fg_color = self.fg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["top_fg_color"]) if fg_color is None else fg_color
-        self.button_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkButton"]["fg_color"]) if button_color is None else button_color
-        self.button_hover_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkButton"]["hover_color"]) if button_hover_color is None else button_hover_color
-        self.button_text = text
+        self.fg_color = self._apply_appearance_mode(self._fg_color) if fg_color is None else fg_color
         self.corner_radius = corner_radius
+        
+        self.command = command
+            
         self.slider_border = 10 if slider_border>=10 else slider_border
         
-        self.config(bg=self.bg_color)
-        
-        self.frame = customtkinter.CTkFrame(master=self, fg_color=self.fg_color, bg_color=self.bg_color)
-        self.frame.grid(padx=20, pady=20, sticky="nswe")
+        self.configure(fg_color=self.fg_color)
           
-        self.canvas = tkinter.Canvas(self.frame, height=self.image_dimension, width=self.image_dimension, highlightthickness=0, bg=self.fg_color)
-        self.canvas.pack(pady=20)
+        self.canvas = tkinter.Canvas(self, height=self.image_dimension, width=self.image_dimension, highlightthickness=0, bg=self.fg_color)
+        self.canvas.pack(pady=20, side="left", padx=(10,0))
         self.canvas.bind("<B1-Motion>", self.on_mouse_drag)
 
         self.img1 = Image.open(os.path.join(PATH, 'color_wheel.png')).resize((self.image_dimension, self.image_dimension), Image.Resampling.LANCZOS)
@@ -83,40 +66,20 @@ class AskColor(customtkinter.CTkToplevel):
         self.brightness_slider_value = customtkinter.IntVar()
         self.brightness_slider_value.set(255)
         
-        self.slider = customtkinter.CTkSlider(master=self.frame, height=20, border_width=self.slider_border,
+        self.slider = customtkinter.CTkSlider(master=self, width=20, border_width=self.slider_border,
                                               button_length=15, progress_color=self.default_hex_color, from_=0, to=255,
                                               variable=self.brightness_slider_value, number_of_steps=256,
                                               button_corner_radius=self.corner_radius, corner_radius=self.corner_radius,
-                                              button_color=self.button_color, button_hover_color=self.button_hover_color,
-                                              command=lambda x:self.update_colors())
-        self.slider.pack(fill="both", pady=(0,15), padx=20-self.slider_border)
+                                              command=lambda x:self.update_colors(), orientation="vertical", **slider_kwargs)
+        self.slider.pack(fill="y", pady=15, side="right", padx=(0,10-self.slider_border))
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color=self.default_hex_color,
-                                            corner_radius=self.corner_radius, text=self.default_hex_color)
-        self.label.pack(fill="both", padx=10)
-        
-        self.button = customtkinter.CTkButton(master=self.frame, text=self.button_text, height=50, corner_radius=self.corner_radius, fg_color=self.button_color,
-                                              hover_color=self.button_hover_color, command=self._ok_event, **button_kwargs)
-        self.button.pack(fill="both", padx=10, pady=20)
-                
-        self.after(150, lambda: self.label.focus())
-                
-        self.grab_set()
+        self.label = customtkinter.CTkLabel(master=self, text_color="#000000", width=10, fg_color=self.default_hex_color,
+                                            corner_radius=self.corner_radius, text=self.default_hex_color, wraplength=1)
+        self.label.pack(expand=True, fill="both", padx=10, pady=15)
         
     def get(self):
         self._color = self.label._fg_color
-        self.master.wait_window(self)
         return self._color
-    
-    def _ok_event(self, event=None):
-        self._color = self.label._fg_color
-        self.grab_release()
-        self.destroy()
-        
-    def _on_closing(self):
-        self._color = None
-        self.grab_release()
-        self.destroy()
         
     def on_mouse_drag(self, event):
         x = event.x
@@ -173,6 +136,9 @@ class AskColor(customtkinter.CTkToplevel):
             
         if str(self.label._fg_color)=="black":
             self.label.configure(text_color="white")
+
+        if self.command:
+            self.command(self.get())
             
     def projection_on_circle(self, point_x, point_y, circle_x, circle_y, radius):
         angle = math.atan2(point_y - circle_y, point_x - circle_x)
@@ -201,7 +167,3 @@ class AskColor(customtkinter.CTkToplevel):
                         return
                     
         self.canvas.create_image(self.image_dimension/2, self.image_dimension/2, image=self.target)
-        
-if __name__ == "__main__":
-    app = AskColor()
-    app.mainloop()
