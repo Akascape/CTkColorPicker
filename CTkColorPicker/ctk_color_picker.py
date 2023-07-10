@@ -112,11 +112,19 @@ class AskColor(customtkinter.CTkToplevel):
         self._color = self.label._fg_color
         self.grab_release()
         self.destroy()
+        del self.img1
+        del self.img2
+        del self.wheel
+        del self.target
         
     def _on_closing(self):
         self._color = None
         self.grab_release()
         self.destroy()
+        del self.img1
+        del self.img2
+        del self.wheel
+        del self.target
         
     def on_mouse_drag(self, event):
         x = event.x
