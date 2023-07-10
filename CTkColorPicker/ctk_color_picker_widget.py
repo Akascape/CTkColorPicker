@@ -81,6 +81,13 @@ class CTkColorPicker(customtkinter.CTkFrame):
         self._color = self.label._fg_color
         return self._color
         
+    def destroy(self):
+        super().destroy()
+        del self.img1
+        del self.img2
+        del self.wheel
+        del self.target
+        
     def on_mouse_drag(self, event):
         x = event.x
         y = event.y
