@@ -27,6 +27,7 @@ class CTkColorPicker(customtkinter.CTkFrame):
                  slider_border: int = 1,
                  corner_radius: int = 24,
                  command = None,
+                 orientation = "vertical",
                  **slider_kwargs):
     
         super().__init__(master=master, corner_radius=corner_radius)
@@ -51,7 +52,6 @@ class CTkColorPicker(customtkinter.CTkFrame):
         self.configure(fg_color=self.fg_color)
           
         self.canvas = tkinter.Canvas(self, height=self.image_dimension, width=self.image_dimension, highlightthickness=0, bg=self.fg_color)
-        self.canvas.pack(pady=20, side="left", padx=(10,0))
         self.canvas.bind("<B1-Motion>", self.on_mouse_drag)
 
         self.img1 = Image.open(os.path.join(PATH, 'color_wheel.png')).resize((self.image_dimension, self.image_dimension), Image.Resampling.LANCZOS)
@@ -70,17 +70,24 @@ class CTkColorPicker(customtkinter.CTkFrame):
                                               button_length=15, progress_color=self.default_hex_color, from_=0, to=255,
                                               variable=self.brightness_slider_value, number_of_steps=256,
                                               button_corner_radius=self.corner_radius, corner_radius=self.corner_radius,
-                                              command=lambda x:self.update_colors(), orientation="vertical", **slider_kwargs)
-        self.slider.pack(fill="y", pady=15, side="right", padx=(0,10-self.slider_border))
-
+                                              command=lambda x:self.update_colors(), orientation=orientation, **slider_kwargs)
+        
         self.label = customtkinter.CTkLabel(master=self, text_color="#000000", width=10, fg_color=self.default_hex_color,
                                             corner_radius=self.corner_radius, text=self.default_hex_color, wraplength=1)
-        self.label.pack(expand=True, fill="both", padx=10, pady=15)
-        
+        if orientation=="vertical":
+            self.canvas.pack(pady=20, side="left", padx=(10,0))
+            self.slider.pack(fill="y", pady=15, side="right", padx=(0,10-self.slider_border))
+            self.label.pack(expand=True, fill="both", padx=10, pady=15)
+        else:
+            self.label.configure(wraplength=100)
+            self.canvas.pack(pady=15, padx=15)
+            self.slider.pack(fill="x", pady=(0,10-self.slider_border), padx=15)
+            self.label.pack(expand=True, fill="both", padx=15, pady=(0,15))
+            
     def get(self):
         self._color = self.label._fg_color
         return self._color
-        
+    
     def destroy(self):
         super().destroy()
         del self.img1
