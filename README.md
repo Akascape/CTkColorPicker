@@ -73,6 +73,7 @@ root.mainloop()
 | slider_border | change the border width of slider |
 | corner_radius | change the corner radius of all the widgets inside color picker |
 | command | add a command when the color is changed |
+| orientation | change orientation of slider and label |
 | _**other slider parameters_ | pass other slider arguments if required |
 
 **That's all, hope it will help!**
