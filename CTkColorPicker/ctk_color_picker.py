@@ -9,17 +9,10 @@ import sys
 import os
 import math
 
-if sys.platform.startswith("win"):
-    try:
-        import ctypes
-        ctypes.windll.shcore.SetProcessDpiAwareness(0)
-    except:
-        pass
-
 PATH = os.path.dirname(os.path.realpath(__file__))
 
 class AskColor(customtkinter.CTkToplevel):
-    
+
     def __init__(self,
                  width: int = 300,
                  title: str = "Choose Color",
@@ -38,8 +31,9 @@ class AskColor(customtkinter.CTkToplevel):
         self.title(title)
         WIDTH = width if width>=200 else 200
         HEIGHT = WIDTH + 150
-        self.image_dimension = WIDTH - 100
-            
+        self.image_dimension = self._apply_window_scaling(WIDTH - 100)
+        self.target_dimension = self._apply_window_scaling(20)
+        
         self.maxsize(WIDTH, HEIGHT)
         self.minsize(WIDTH, HEIGHT)
         self.resizable(width=False, height=False)
@@ -72,7 +66,7 @@ class AskColor(customtkinter.CTkToplevel):
         self.canvas.bind("<B1-Motion>", self.on_mouse_drag)
 
         self.img1 = Image.open(os.path.join(PATH, 'color_wheel.png')).resize((self.image_dimension, self.image_dimension), Image.Resampling.LANCZOS)
-        self.img2 = Image.open(os.path.join(PATH, 'target.png')).resize((20, 20), Image.Resampling.LANCZOS)
+        self.img2 = Image.open(os.path.join(PATH, 'target.png')).resize((self.target_dimension, self.target_dimension), Image.Resampling.LANCZOS)
 
         self.wheel = ImageTk.PhotoImage(self.img1)
         self.target = ImageTk.PhotoImage(self.img2)
