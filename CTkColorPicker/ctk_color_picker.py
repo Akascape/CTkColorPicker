@@ -16,6 +16,7 @@ class AskColor(customtkinter.CTkToplevel):
     def __init__(self,
                  width: int = 300,
                  title: str = "Choose Color",
+                 window_offset: tuple[int, int] = (0, 0)
                  initial_color: str = None,
                  bg_color: str = None,
                  fg_color: str = None,
@@ -34,8 +35,7 @@ class AskColor(customtkinter.CTkToplevel):
         self.image_dimension = self._apply_window_scaling(WIDTH - 100)
         self.target_dimension = self._apply_window_scaling(20)
         
-        self.maxsize(WIDTH, HEIGHT)
-        self.minsize(WIDTH, HEIGHT)
+        self.geometry(f"{WIDTH}x{HEIGHT}+{window_offset[0]}+{window_offset[1]}")
         self.resizable(width=False, height=False)
         self.transient(self.master)
         self.lift()
