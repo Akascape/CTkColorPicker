@@ -8,6 +8,7 @@ from PIL import Image, ImageTk
 import sys
 import os
 import math
+from pyperclip import copy
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 
@@ -85,8 +86,11 @@ class AskColor(customtkinter.CTkToplevel):
                                               command=lambda x:self.update_colors())
         self.slider.pack(fill="both", pady=(0,15), padx=20-self.slider_border)
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color=self.default_hex_color,
-                                            corner_radius=self.corner_radius, text=self.default_hex_color)
+        self.label = customtkinter.CTkButton(master=self, text_color="#000000", width=10, fg_color=self.default_hex_color,
+                                            corner_radius=self.corner_radius, text=self.default_hex_color, hover_color=self.default_hex_color, command=self.copy_color)
+
+        self.label._text_label.configure(wraplength=1)
+                     
         self.label.pack(fill="both", padx=10)
         
         self.button = customtkinter.CTkButton(master=self.frame, text=self.button_text, height=50, corner_radius=self.corner_radius, fg_color=self.button_color,
@@ -165,6 +169,7 @@ class AskColor(customtkinter.CTkToplevel):
         
         self.slider.configure(progress_color=self.default_hex_color)
         self.label.configure(fg_color=self.default_hex_color)
+        self.label.configure(hover_color=self.default_hex_color)
         
         self.label.configure(text=str(self.default_hex_color))
         
@@ -203,6 +208,9 @@ class AskColor(customtkinter.CTkToplevel):
                         return
                     
         self.canvas.create_image(self.image_dimension/2, self.image_dimension/2, image=self.target)
+
+    def copy_color(self):
+        copy(self.default_hex_color)
         
 if __name__ == "__main__":
     app = AskColor()
