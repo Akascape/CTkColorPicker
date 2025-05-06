@@ -7,6 +7,7 @@ from PIL import Image, ImageTk
 import sys
 import os
 import math
+from pyperclip import copy
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 
@@ -66,8 +67,11 @@ class CTkColorPicker(customtkinter.CTkFrame):
                                               button_corner_radius=self.corner_radius, corner_radius=self.corner_radius,
                                               command=lambda x:self.update_colors(), orientation=orientation, **slider_kwargs)
         
-        self.label = customtkinter.CTkLabel(master=self, text_color="#000000", width=10, fg_color=self.default_hex_color,
-                                            corner_radius=self.corner_radius, text=self.default_hex_color, wraplength=1)
+        self.label = customtkinter.CTkButton(master=self, text_color="#000000", width=10, fg_color=self.default_hex_color,
+                                            corner_radius=self.corner_radius, text=self.default_hex_color, hover_color=self.default_hex_color, command=self.copy_color)
+        
+        self.label._text_label.configure(wraplength=1)
+        
         if orientation=="vertical":
             self.canvas.pack(pady=20, side="left", padx=(10,0))
             self.slider.pack(fill="y", pady=15, side="right", padx=(0,10-self.slider_border))
@@ -134,6 +138,7 @@ class CTkColorPicker(customtkinter.CTkFrame):
         
         self.slider.configure(progress_color=self.default_hex_color)
         self.label.configure(fg_color=self.default_hex_color)
+        self.label.configure(hover_color=self.default_hex_color)
         
         self.label.configure(text=str(self.default_hex_color))
         
@@ -173,5 +178,8 @@ class CTkColorPicker(customtkinter.CTkFrame):
                         self.target_x = i
                         self.target_y = j
                         return
+                    
+    def copy_color(self):
+        copy(self.default_hex_color)
                     
         self.canvas.create_image(self.image_dimension/2, self.image_dimension/2, image=self.target)
