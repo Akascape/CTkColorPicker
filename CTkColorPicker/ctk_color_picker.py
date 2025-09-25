@@ -30,7 +30,7 @@ class AskColor(customtkinter.CTkToplevel):
         
         self.title(title)
         WIDTH = width if width>=200 else 200
-        HEIGHT = WIDTH + 150
+        HEIGHT = WIDTH + 180
         self.image_dimension = self._apply_window_scaling(WIDTH - 100)
         self.target_dimension = self._apply_window_scaling(20)
         
@@ -49,7 +49,7 @@ class AskColor(customtkinter.CTkToplevel):
         self.rgb_color = self.default_rgb[:]
         
         self.bg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["fg_color"]) if bg_color is None else bg_color
-        self.fg_color = self.fg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["top_fg_color"]) if fg_color is None else fg_color
+        self.fg_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkFrame"]["top_fg_color"]) if fg_color is None else fg_color
         self.button_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkButton"]["fg_color"]) if button_color is None else button_color
         self.button_hover_color = self._apply_appearance_mode(customtkinter.ThemeManager.theme["CTkButton"]["hover_color"]) if button_hover_color is None else button_hover_color
         self.button_text = text
@@ -85,25 +85,33 @@ class AskColor(customtkinter.CTkToplevel):
                                               command=lambda x:self.update_colors())
         self.slider.pack(fill="both", pady=(0,15), padx=20-self.slider_border)
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text_color="#000000", height=50, fg_color=self.default_hex_color,
-                                            corner_radius=self.corner_radius, text=self.default_hex_color)
-        self.label.pack(fill="both", padx=10)
-        
+        # 🔹 Replace label with Entry
+        self.hex_var = customtkinter.StringVar(value=self.default_hex_color)
+        self.hex_entry = customtkinter.CTkEntry(master=self.frame, height=50,
+                                                corner_radius=self.corner_radius,
+                                                fg_color=self.default_hex_color,
+                                                textvariable=self.hex_var,
+                                                text_color="black")
+        self.hex_entry.pack(fill="both", padx=10)
+
+        # 🔹 automatically update on every keystroke
+        self.hex_var.trace_add("write", self._update_from_entry)
+
         self.button = customtkinter.CTkButton(master=self.frame, text=self.button_text, height=50, corner_radius=self.corner_radius, fg_color=self.button_color,
                                               hover_color=self.button_hover_color, command=self._ok_event, **button_kwargs)
         self.button.pack(fill="both", padx=10, pady=20)
                 
-        self.after(150, lambda: self.label.focus())
+        self.after(150, lambda: self.hex_entry.focus())
                 
         self.grab_set()
         
     def get(self):
-        self._color = self.label._fg_color
+        self._color = self.hex_entry.get()
         self.master.wait_window(self)
         return self._color
     
     def _ok_event(self, event=None):
-        self._color = self.label._fg_color
+        self._color = self.hex_entry.get()
         self.grab_release()
         self.destroy()
         del self.img1
@@ -164,18 +172,57 @@ class AskColor(customtkinter.CTkToplevel):
         self.default_hex_color = "#{:02x}{:02x}{:02x}".format(*self.rgb_color)
         
         self.slider.configure(progress_color=self.default_hex_color)
-        self.label.configure(fg_color=self.default_hex_color)
-        
-        self.label.configure(text=str(self.default_hex_color))
-        
+        self.hex_entry.configure(fg_color=self.default_hex_color)
+
+        # adjust text color for readability
         if self.brightness_slider_value.get() < 70:
-            self.label.configure(text_color="white")
+            self.hex_entry.configure(text_color="white")
         else:
-            self.label.configure(text_color="black")
+            self.hex_entry.configure(text_color="black")
             
-        if str(self.label._fg_color)=="black":
-            self.label.configure(text_color="white")
+        if str(self.hex_entry._fg_color)=="black":
+            self.hex_entry.configure(text_color="white")
             
+    def _update_from_entry(self, *args):
+        """Update color only if hex is valid; keep old color if invalid"""
+        hex_val = self.hex_entry.get().strip()
+
+        # must be exactly #RRGGBB
+        if not (hex_val.startswith("#") and len(hex_val) == 7):
+            return  # invalid, ignore completely
+
+        try:
+            r,g,b = tuple(int(hex_val.lstrip('#')[i:i+2], 16) for i in (0,2,4))
+        except ValueError:
+            return  # invalid hex digits, ignore
+
+        # ✅ valid color → update everything
+        self.rgb_color = [r,g,b]
+        self.default_hex_color = hex_val
+
+        # 🔹 Find nearest pixel in wheel
+        min_dist = float("inf")
+        nearest = (self.image_dimension//2, self.image_dimension//2)  # fallback center
+
+        for i in range(0, self.image_dimension, 2):  # step for speed
+            for j in range(0, self.image_dimension, 2):
+                try:
+                    pix = self.img1.getpixel((i, j))[:3]
+                except:
+                    continue
+                dist = (pix[0]-r)**2 + (pix[1]-g)**2 + (pix[2]-b)**2
+                if dist < min_dist:
+                    min_dist = dist
+                    nearest = (i, j)
+
+        # Move target
+        self.canvas.delete("all")
+        self.canvas.create_image(self.image_dimension/2, self.image_dimension/2, image=self.wheel)
+        self.canvas.create_image(nearest[0], nearest[1], image=self.target)
+        self.target_x, self.target_y = nearest
+
+        self.update_colors()
+
     def projection_on_circle(self, point_x, point_y, circle_x, circle_y, radius):
         angle = math.atan2(point_y - circle_y, point_x - circle_x)
         projection_x = circle_x + radius * math.cos(angle)
@@ -184,8 +231,6 @@ class AskColor(customtkinter.CTkToplevel):
         return projection_x, projection_y
     
     def set_initial_color(self, initial_color):
-        # set_initial_color is in beta stage, cannot seek all colors accurately
-        
         if initial_color and initial_color.startswith("#"):
             try:
                 r,g,b = tuple(int(initial_color.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
